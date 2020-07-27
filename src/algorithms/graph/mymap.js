@@ -18,9 +18,15 @@ const THIRDPHASECOLOR = "green"; //'#ff5983'
 const SECONDPHASECOLOR = "yellow"; // '#bb002f'
 
 const MyMap = () => {
-  const [startpoint, setStartPoint] = useState('');
+  const NUMROWS = 5;
+  const NUMCOLUMNS = 5;
+  var graphi = new Map();
+  const deletedvertex = new Array() 
+  //const [graphi, setGraphi] = useState(new Map());
 
-  const [endPoint, setEndPoint] = useState('');
+  const [startpoint, setStartPoint] = useState("");
+
+  const [endPoint, setEndPoint] = useState("");
 
   const [messageBudy, setMessageBudy] = useState(
     "by clicking on the map , you are choosing your start point"
@@ -32,6 +38,10 @@ const MyMap = () => {
   const [phase, setPhase] = useState(0);
 
   const [theWay, setTheWay] = useState([]);
+
+  const makeAroad = (point) => {
+    return theWay.indexOf(point) != -1;
+  };
 
   const thirdPhasePhaseInit = () => {
     setPhasecolor(THIRDPHASECOLOR);
@@ -51,14 +61,10 @@ const MyMap = () => {
   const setMyStartPoint = (index) => {
     console.log("uindex from map ", index);
 
-  
-
     setStartPoint(index);
-  
   };
   const setMyEndPoint = (index) => {
     setEndPoint(index);
-
   };
 
   const updateStage = () => {
@@ -85,7 +91,15 @@ const MyMap = () => {
     MyGraph.deleteVertex(indexe);
   };
 
-  const rows = _.times(10, (i) => {
+  const deletvertex = (index) => {
+    console.log(index, graphi.has(index));
+
+    if (graphi.has(index)) {
+      graphi.delete(index);
+      deletedvertex.push(index)
+    }
+  };
+  const rows = _.times(NUMROWS, (i) => {
     return (
       <Grid.Row
         style={{
@@ -93,10 +107,29 @@ const MyMap = () => {
         }}
         key={i + "row"}
       >
-        {_.times(16, (j) => {
+        {_.times(NUMCOLUMNS, (j) => {
+          graphi.set(`${i}+${j}`, []);
+
+          if (j - 1 >= 0) {
+            graphi.get(`${i}+${j}`).push(`${i}+${j - 1}`);
+          }
+
+          if (i + 1 < 16) {
+            graphi.get(`${i}+${j}`).push(`${i + 1}+${j}`);
+          }
+          if (j + 1 < 10) {
+            graphi.get(`${i}+${j}`).push(`${i}+${j + 1}`);
+          }
+
+          if (i - 1 >= 0) {
+            graphi.get(`${i}+${j}`).push(`${i - 1}+${j}`);
+          }
+
           return (
             <Grid.Column stretched width={1} key={j}>
               <GraphBtn
+                deletvertex={deletvertex}
+                makeAroad={makeAroad}
                 setWall={setWall}
                 setMyEndPoint={setMyEndPoint}
                 setStartPoint={setMyStartPoint}
@@ -111,15 +144,59 @@ const MyMap = () => {
     );
   });
 
+  const bfs = (startpoint, endpoint) => {
+    console.log(startpoint, endpoint);
+
+    const visited = new Array();
+    const mystack = Array();
+    const parentMap = new Map();
+
+    mystack.push(startpoint);
+    visited.push(startpoint);
+
+    //console.log(mystack);
+
+    while (mystack.length != 0) {
+      var current = mystack.pop();
+      if ( deletedvertex.indexOf(current) !=-1 ){
+      console.log(deletedvertex.indexOf(current) !=-1 )
+      current = mystack.pop()
+      }
+      if (current == endpoint) return parentMap;
+     
+        var currentNeighbors = graphi.get(current);
+
+      if (currentNeighbors  ) {
+        for (var i = 0; i < currentNeighbors.length; i++) {
+          let node = currentNeighbors[i];
+          if (visited.indexOf(node) == -1) {
+            // console.log(node);
+            visited.push(node);
+            parentMap.set(current, node);
+            mystack.push(node);
+          }
+        }
+      
+    }
+    }
+  };
+
   const startSearching = () => {
- console.log(   MyGraph.bfs(startpoint , endPoint) )
+    console.log("start searchng ");
+    const myWay = bfs(startpoint, endPoint);
+    // console.log(bfs(startpoint , endPoint))
 
-
+    if (myWay) {
+      let arrr = myWay.keys();
+      console.log("array of ", arrr);
+      setTheWay([...arrr]);
+      // console.log(theWay);
+    }
   };
 
   useEffect(() => {
-    MyGraph.setnoOfVertices(16 * 10);
-    MyGraph.constructMap(16, 10);
+    //MyGraph.setnoOfVertices(16 * 10);
+    // MyGraph.constructMap(16, 10);
 
     initPhases();
   }, []);
@@ -180,11 +257,7 @@ const MyMap = () => {
             ></div>
 
             <Button as="div" labelPosition="right">
-              <Button
-                basic
-                color="blue"
-                onClick={startSearching}
-              >
+              <Button basic color="blue" onClick={startSearching}>
                 <Icon name="window maximize" />
               </Button>
               <Label as="a" basic color={FIRSTPHASECOLOR} pointing="left">

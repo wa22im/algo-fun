@@ -29,9 +29,10 @@ const GraphBtn = (props) => {
         props.setWall(index)
         setbtnIcon(wallIcon)
         setbtnColor(wallColor);
+        props.deletvertex(index)
+
         break;
       case 2:
-        console.log(index)
         props.setMyEndPoint(index)
         setbtnColor(endPointColor);
         setbtnIcon(endPointIcon)
@@ -50,7 +51,7 @@ const GraphBtn = (props) => {
       }}
       
       name={props.key}
-      color={btnColor}
+      color={props.makeAroad(index)? 'yellow' :  btnColor}
       onClick={(e) => {
         handleClick(e);
       }}

@@ -9,26 +9,23 @@ class Graph {
   }
 
   constructMap(rows, columns) {
-    var x, y;
     for (var i = 0; i < rows; i++) {
       for (var j = 0; j < columns; j++) {
         this.adjList.set(`${i}+${j}`, []);
         if (j - 1 >= 0) {
-          this.adjList.get(`${i}+${j}`).push(`${i }+${j-1}`);
+          this.adjList.get(`${i}+${j}`).push(`${i}+${j - 1}`);
         }
 
-        if (i + 1 <rows) {
+        if (i + 1 < rows) {
           this.adjList.get(`${i}+${j}`).push(`${i + 1}+${j}`);
         }
         if (j + 1 < columns) {
-          this.adjList.get(`${i}+${j}`).push(`${i }+${j+1}`);
+          this.adjList.get(`${i}+${j}`).push(`${i}+${j + 1}`);
         }
 
-        if (i -1 >= 0) {
+        if (i - 1 >= 0) {
           this.adjList.get(`${i}+${j}`).push(`${i - 1}+${j}`);
         }
-
-
 
         /*
         if ( i === 0 && j===0 ){
@@ -66,8 +63,7 @@ class Graph {
   }
 
   bfs(startpoint, endpoint) {
-    console.log(startpoint     ,endpoint )
-   
+    console.log(startpoint, endpoint);
 
     const visited = new Array();
     const mystack = Array();
@@ -78,20 +74,18 @@ class Graph {
 
     while (mystack.length != 0) {
       var current = mystack.pop();
-      if (current == endpoint)  return parentMap;
+      if (current == endpoint) return parentMap;
       var currentNeighbors = this.adjList.get(current);
 
-
-        
-
-
-      for ( var i = 0 ; i<currentNeighbors.length ;  i ++ ) {
-        let node = currentNeighbors[i]
-        if (visited.indexOf(node) == -1) {
-          console.log(node)
-          visited.push(node);
-          parentMap.set(current, node);
-          mystack.push(node);
+      if (currentNeighbors) {
+        for (var i = 0; i < currentNeighbors.length; i++) {
+          let node = currentNeighbors[i];
+          if (visited.indexOf(node) == -1) {
+            console.log(node);
+            visited.push(node);
+            parentMap.set(current, node);
+            mystack.push(node);
+          }
         }
       }
     }
@@ -99,20 +93,11 @@ class Graph {
   deleteVertex(v) {
     if (this.adjList.has(v)) {
       this.adjList.delete(v);
-     for (var [key , value ] of this.adjList.entries()){
-     console.log(key , value)
-     let arr = this.adjList.get(key);
-     if (arr.includes(v)) {
-       this.adjList.get(key).slice(arr.indexOf(v),1);
-
     }
-    console.log(this.adjList)
   }
-  }
-}
 
   print() {
-  console.log(this.adjList)
+    console.log(this.adjList);
   }
 }
 
