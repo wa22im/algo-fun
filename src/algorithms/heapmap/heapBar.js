@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import { ResponsiveBar } from '@nivo/bar'
 // make sure parent container have a defined height when using
@@ -6,15 +6,25 @@ import { ResponsiveBar } from '@nivo/bar'
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
-const MyResponsiveBar = ({ data ,barKeys  , barIndex,leftAxe,barLegend /* see data tab */ }) => (
+
+
+const fakded = [{
+    'row' : 1 , 
+    'value': 66
+
+}]
+
+
+const HeapBar = ({ data /* see data tab */ }) => {
+    
+   return (
     <ResponsiveBar
         data={data}
-        keys={barKeys}
-        indexBy={barIndex}
+        keys={[ 'value']}
+        indexBy="row"
         margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
         padding={0.3}
-        colors={{ scheme: 'set3' }}
-        colorBy="index"
+        colors={{ scheme: 'nivo' }}
         defs={[
             {
                 id: 'dots',
@@ -22,7 +32,7 @@ const MyResponsiveBar = ({ data ,barKeys  , barIndex,leftAxe,barLegend /* see da
                 background: 'inherit',
                 color: '#38bcb2',
                 size: 4,
-                padding: 5,
+                padding: 1,
                 stagger: true
             },
             {
@@ -35,8 +45,20 @@ const MyResponsiveBar = ({ data ,barKeys  , barIndex,leftAxe,barLegend /* see da
                 spacing: 10
             }
         ]}
-        
-        borderRadius={1}
+        fill={[
+            {
+                match: {
+                    id: 'fries'
+                },
+                id: 'dots'
+            },
+            {
+                match: {
+                    id: 'sandwich'
+                },
+                id: 'lines'
+            }
+        ]}
         borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
         axisTop={null}
         axisRight={null}
@@ -52,14 +74,14 @@ const MyResponsiveBar = ({ data ,barKeys  , barIndex,leftAxe,barLegend /* see da
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: `${leftAxe? leftAxe : ''}`,
+            legend: 'food',
             legendPosition: 'middle',
             legendOffset: -40
         }}
         labelSkipWidth={12}
         labelSkipHeight={12}
         labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-        legends={!barLegend ?[]: [
+        legends={[
             {
                 dataFrom: 'keys',
                 anchor: 'bottom-right',
@@ -77,16 +99,15 @@ const MyResponsiveBar = ({ data ,barKeys  , barIndex,leftAxe,barLegend /* see da
                     {
                         on: 'hover',
                         style: {
-                            itemOpacity: 5
+                            itemOpacity: 1
                         }
                     }
                 ]
             }
         ]}
         animate={true}
-        motionStiffness={200}
-        motionDamping={80}
-    />
-)
-
-export default MyResponsiveBar ; 
+        motionStiffness={90}
+        motionDamping={15}
+    />)
+}
+export default HeapBar;

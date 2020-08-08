@@ -1,8 +1,10 @@
 import React from 'react';
 import SelectionSort from './algorithms/selectionSort'
 import MyMap from './algorithms/graph/mymap'
+import MyHeap from './algorithms/heapmap/myheap'
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -30,6 +32,9 @@ function App() {
          </Route>
          <Route exact path="/map" >
            <MyMap />
+         </Route>
+         <Route exact path = "/heap">
+           <MyHeap/>
          </Route>
        
        </Switch>

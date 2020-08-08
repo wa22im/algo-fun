@@ -56,7 +56,9 @@ const GraphBtn = (props) => {
         handleClick(e);
       }}
     >
-      <Icon name={btnIcon} />
+      {index}
+     {/* <Icon name={btnIcon} small /> */}
+     
     </Button>
   );
 };

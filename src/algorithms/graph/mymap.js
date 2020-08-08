@@ -21,7 +21,7 @@ const MyMap = () => {
   const NUMROWS = 5;
   const NUMCOLUMNS = 5;
   var graphi = new Map();
-  const deletedvertex = new Array() 
+  const vertexsDeleted = [];
   //const [graphi, setGraphi] = useState(new Map());
 
   const [startpoint, setStartPoint] = useState("");
@@ -59,8 +59,6 @@ const MyMap = () => {
   };
 
   const setMyStartPoint = (index) => {
-    console.log("uindex from map ", index);
-
     setStartPoint(index);
   };
   const setMyEndPoint = (index) => {
@@ -88,15 +86,18 @@ const MyMap = () => {
   };
 
   const setWall = (indexe) => {
-    MyGraph.deleteVertex(indexe);
+    //  vertexsDeleted.push(indexe);
+    //MyGraph.deleteVertex(indexe);
   };
 
   const deletvertex = (index) => {
-    console.log(index, graphi.has(index));
-
+    console.log("i m gonna delete u ", index);
+    console.log(vertexsDeleted);
     if (graphi.has(index)) {
+      vertexsDeleted.push(index);
+      console.log(vertexsDeleted);
+
       graphi.delete(index);
-      deletedvertex.push(index)
     }
   };
   const rows = _.times(NUMROWS, (i) => {
@@ -108,21 +109,23 @@ const MyMap = () => {
         key={i + "row"}
       >
         {_.times(NUMCOLUMNS, (j) => {
-          graphi.set(`${i}+${j}`, []);
+          if (!graphi.has(`${j}+${i}`)) {
+            graphi.set(`${j}+${i}`, []);
 
-          if (j - 1 >= 0) {
-            graphi.get(`${i}+${j}`).push(`${i}+${j - 1}`);
-          }
+            if (i - 1 >= 0) {
+              graphi.get(`${j}+${i}`).push(`${j}+${i - 1}`);
+            }
 
-          if (i + 1 < 16) {
-            graphi.get(`${i}+${j}`).push(`${i + 1}+${j}`);
-          }
-          if (j + 1 < 10) {
-            graphi.get(`${i}+${j}`).push(`${i}+${j + 1}`);
-          }
+            if (j + 1 < 16) {
+              graphi.get(`${j}+${i}`).push(`${j + 1}+${i}`);
+            }
+            if (j + 1 < 10) {
+              graphi.get(`${j}+${i}`).push(`${j}+${i + 1}`);
+            }
 
-          if (i - 1 >= 0) {
-            graphi.get(`${i}+${j}`).push(`${i - 1}+${j}`);
+            if (j - 1 >= 0) {
+              graphi.get(`${j}+${i}`).push(`${j - 1}+${i}`);
+            }
           }
 
           return (
@@ -145,59 +148,46 @@ const MyMap = () => {
   });
 
   const bfs = (startpoint, endpoint) => {
-    console.log(startpoint, endpoint);
-
     const visited = new Array();
-    const mystack = Array();
+    const mystack = new Array();
     const parentMap = new Map();
-
     mystack.push(startpoint);
     visited.push(startpoint);
-
-    //console.log(mystack);
-
     while (mystack.length != 0) {
       var current = mystack.pop();
-      if ( deletedvertex.indexOf(current) !=-1 ){
-      console.log(deletedvertex.indexOf(current) !=-1 )
-      current = mystack.pop()
-      }
-      if (current == endpoint) return parentMap;
-     
-        var currentNeighbors = graphi.get(current);
-
-      if (currentNeighbors  ) {
+      if (current === endpoint) return parentMap;
+      var currentNeighbors = graphi.get(current);
+      if (currentNeighbors) {
         for (var i = 0; i < currentNeighbors.length; i++) {
           let node = currentNeighbors[i];
-          if (visited.indexOf(node) == -1) {
-            // console.log(node);
-            visited.push(node);
-            parentMap.set(current, node);
-            mystack.push(node);
+          const del = vertexsDeleted.indexOf(node);
+          switch (del) {
+            case -1:
+              mystack.push(node);
+              visited.push(node);
+              parentMap.set(current, node);
+              break;
+            default:
+              parentMap.delete(node);
+              break;
           }
         }
-      
-    }
+      }
     }
   };
 
   const startSearching = () => {
     console.log("start searchng ");
     const myWay = bfs(startpoint, endPoint);
-    // console.log(bfs(startpoint , endPoint))
+    //console.log(bfs(startpoint, endPoint))
 
     if (myWay) {
       let arrr = myWay.keys();
-      console.log("array of ", arrr);
       setTheWay([...arrr]);
-      // console.log(theWay);
     }
   };
 
   useEffect(() => {
-    //MyGraph.setnoOfVertices(16 * 10);
-    // MyGraph.constructMap(16, 10);
-
     initPhases();
   }, []);
 
