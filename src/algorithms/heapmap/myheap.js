@@ -11,12 +11,15 @@ import {
   Icon,
   Table,
   Divider,
+  Header,
 } from "semantic-ui-react";
 import _ from "lodash";
 import HeapBar from "./heapBar";
 import Expe from "./expe";
+import Tree from "./tree";
 
 const MyHeap = () => {
+  const [serfHeap, setSerfHeap] = useState(0);
   const customPriorityComparatorlower = (a, b) => a["valuee"] - b["valuee"];
 
   const customPriorityComparator = (a, b) => b["valuee"] - a["valuee"];
@@ -24,24 +27,41 @@ const MyHeap = () => {
   let heappLower = new Heap(customPriorityComparator);
   let heappUpper = new Heap(customPriorityComparatorlower);
 
-  heappLower.init([]);
-  heappUpper.init([]);
-
   const [endSearch, setEndSearch] = useState(false);
 
   const [notif, setNotif] = useState([]);
   const [daysNotif, setDaysNotif] = useState([]);
+  const [lowHeaps, setLowHeaps] = useState([]);
+  const [upperHeaps, setUpperHeaps] = useState([]);
 
   const [expe, setExpe] = useState([]);
   const [numberDay, setNumberDays] = useState(1);
   const [dayTrigger, setdayTrigger] = useState(false);
   const [followDays, setFollowDays] = useState(0);
 
+  const HandleRedo = () => {
+    setdayTrigger(false);
+    setNumberDays(1);
+
+    setSerfHeap(0);
+    setNotif(notif.splice());
+    setDaysNotif(daysNotif.splice());
+    setLowHeaps(lowHeaps.splice());
+    setUpperHeaps(upperHeaps.splice());
+    setExpe(expe.slice());
+    setFollowDays(0);
+  };
+
   const handleDayNumber = (e) => {
     if (e.target.value.indexOf("-") === -1) {
       if (e.target.name == "numdays") {
+        if (e.target.value < numberDay) {
+          let m = expe;
+          m.shift();
+          setExpe([...m]);
+        } else setExpe([...expe, Math.floor(Math.random() * 101) + 1]);
+
         setNumberDays(e.target.value);
-        setExpe([...expe, Math.floor(Math.random() * 101)+1]);
       } else {
         setFollowDays(e.target.value);
       }
@@ -88,7 +108,12 @@ const MyHeap = () => {
   };
 
   const activityNotifications = () => {
+    heappLower.init([]);
+    heappUpper.init([]);
+    console.log("start algo");
     let vi = [];
+    let lowh = [];
+    let uph = [];
     let d = 5;
     let notifi = 0;
     let notifArray = [];
@@ -116,6 +141,8 @@ const MyHeap = () => {
         };
         vi.unshift(i);
         notifArray.unshift(note);
+        lowh.push(heappLower.toArray());
+        uph.push(heappUpper.toArray());
       }
 
       removeFromHeap(i - followDays, expe[i - followDays]);
@@ -127,9 +154,12 @@ const MyHeap = () => {
       addToHeap(no);
       rebalence();
     }
-    setDaysNotif([...vi]);
 
     setNotif([...notifArray]);
+
+    setDaysNotif([...vi]);
+    setLowHeaps([...lowh]);
+    setUpperHeaps([...uph]);
   };
 
   return (
@@ -141,6 +171,12 @@ const MyHeap = () => {
         marginRight: "50px",
       }}
     >
+      <Header>Fraudulent Activity Notifications</Header>
+      <Container>
+        in ordre to solve this , we used Heap data structre in ordre to keep
+        finding the median .
+      </Container>
+
       <Table
         style={{
           width: "50vw",
@@ -168,38 +204,37 @@ const MyHeap = () => {
 
       <Form>
         <Form.Group inline>
-          <Form.Field disabled={dayTrigger}>
+          <Form.Field>
             <Label basic color="teal" pointing="right">
-              choose follow days {`${typeof expenditures}`}
+              choose follow days ...
             </Label>
             <Input
               name="numdays"
               width={4}
               placeholder="0"
               type="number"
+              max={50}
               value={numberDay}
               onChange={handleDayNumber}
+              min={1}
             />
           </Form.Field>
 
-          <Form.Field disabled={dayTrigger}>
+          <Form.Field>
             <Input
               name="followdays"
               width={4}
               value={followDays}
               placeholder="0"
               type="number"
+              max={numberDay - 1}
+              min={1}
               onChange={handleDayNumber}
             />
-            {followDays < numberDay ? (
-              <Label basic color="teal" pointing="left">
-                choose follow days
-              </Label>
-            ) : (
-              <Label color="red" pointing="left">
-                follow days must be > number of days {followDays}
-              </Label>
-            )}
+
+            <Label basic color="teal" pointing="left">
+              choose follow days
+            </Label>
           </Form.Field>
         </Form.Group>
         <Form.Button positive animated="vertical" onClick={confirmDays}>
@@ -218,7 +253,7 @@ const MyHeap = () => {
         <Grid.Row>
           {expe.map((exp, idx) => (
             <Expe
-              color={daysNotif.indexOf(idx) == -1 ? "#FFFFFF" : "red"}
+              color={daysNotif.indexOf(idx) == -1 ? null : "red"}
               key={idx + "g" + exp}
               exp={exp}
               idx={idx}
@@ -226,21 +261,48 @@ const MyHeap = () => {
           ))}
         </Grid.Row>
       </Grid>
-      <Divider>
-        <h4>
-          value in heap ... {daysNotif.map((dta, idx) => `${dta.value}|`)}
-        </h4>
-      </Divider>
+      <Divider> </Divider>
 
-      <div
+      <h4>
+        value in heap when a notification has been sent , you can check for the
+        median...{" "}
+      </h4>
+      <Button.Group>
+        <Button
+          icon
+          onClick={() => {
+            if (serfHeap >= 1) setSerfHeap(serfHeap - 1);
+          }}
+        >
+          <Icon name="angle double left" />
+        </Button>
+        <Label> {`${notif.length==0? serfHeap:serfHeap+1}/${notif.length}`}</Label>
+        <Button
+          icon
+          onClick={() => {
+            if (serfHeap + 1 < notif.length) setSerfHeap(serfHeap + 1);
+          }}
+        >
+          <Icon name="angle double right" />
+        </Button>
+      </Button.Group>
+      <Container
         style={{
-          margin: "auto",
-          width: "50%",
-          border: "1px solid green",
-          padding: "10px",
-          height: "500px",
+          marginTop: "40px",
         }}
-      ></div>
+      >
+        <Grid celled width={10}>
+          <Grid.Column width={8}>
+            <h3> heap with biggest values / min heap </h3>
+            <Tree data={lowHeaps[serfHeap]}></Tree>
+          </Grid.Column>
+          <Grid.Column width={4}>
+            <h3> heap with smallest values /max heap </h3>
+
+            <Tree data={upperHeaps[serfHeap]}></Tree>
+          </Grid.Column>
+        </Grid>
+      </Container>
     </Container>
   );
 };
