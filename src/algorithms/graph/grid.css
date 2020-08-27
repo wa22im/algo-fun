@@ -1,0 +1,55 @@
+.containermap {
+  width: 100%;
+  margin: auto;
+  height: 100vh;
+}
+
+.grid-container-div {
+  background-color: #f7f7f7;
+  border: 1px outset #dfe3ee;
+  height: 15px;
+  width: 20px;
+  margin: 0px;
+  transition: opacity 0.1s;
+
+}
+.selected {
+  border-radius: 3px;
+  transition: all 0.3s ease;
+
+}
+.first-node {
+  background-color: #011627  ;
+  transition: all 0.3s ease;
+ 
+  position: relative;
+}
+
+
+.end-node {
+  background-color: #2ec4b6       !important;
+  border: 1px outset ivory;
+}
+.visted-node {
+  background-color: #004ba0;
+}
+
+.wall-node {
+  background-color: #e71d36;
+  border: 0px;
+}
+
+.stop-node {
+  background-color: #ff9f1c   ;
+  border: 0px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  
+}
+.path-node {
+  background-color: #F7DB4F;
+  border: 0px;
+  box-shadow :1px 0px 10px 0px black
+}
+
