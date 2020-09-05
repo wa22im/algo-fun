@@ -11,6 +11,7 @@ import { Navbar } from "./web/navbar/navbar";
 import HomepageLayout, { Home } from "./web/home/home";
 import Mapalgos from "./algorithms/graph/mapalgos";
 import PathFinding from "./algorithms/graph/pathFinding";
+import MapPathFinding from "./algorithms/graph/mapPathFinding";
 function App() {
   return (
     <Router>
@@ -40,7 +41,7 @@ function App() {
           <MyHeap />
         </Route>
         <Route exact path="/map">
-          <PathFinding></PathFinding>
+          <MapPathFinding></MapPathFinding>
         </Route>
       </Switch>
     </Router>
