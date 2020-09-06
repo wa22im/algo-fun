@@ -1,5 +1,4 @@
 import React from "react";
-import SelectionSort from "./algorithms/sortAlgos/selectionSort";
 import MyHeap from "./algorithms/heapmap/myheap";
 
 import "semantic-ui-css/semantic.min.css";
@@ -30,10 +29,8 @@ function App() {
           <HomepageLayout />
         </Route>
 
+        
         <Route exact path="/sort">
-          <SelectionSort />
-        </Route>
-        <Route exact path="/sortv2">
           <Sorting />
       
         </Route>

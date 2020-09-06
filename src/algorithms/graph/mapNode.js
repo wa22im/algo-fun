@@ -31,12 +31,12 @@ class MapNode {
     // setting neibghors and adjency list
 
     let adjweghit = {};
-
-    if (this.row - 1 >= 0) {
+        if (this.row - 1 >= 0) {
       this.jirani.push(`${this.row - 1}+${this.column}`);
       if (this.islack) adjweghit[`${this.row - 1}+${this.column}`] = 5;
       else adjweghit[`${this.row - 1}+${this.column}`] = 1;
     }
+   
     if (this.column + 1 < NUMCOLUMNS) {
       this.jirani.push(`${this.row}+${this.column + 1}`);
       if (this.islack) adjweghit[`${this.row}+${this.column + 1}`] = 5;
@@ -48,6 +48,8 @@ class MapNode {
       if (this.islack) adjweghit[`${this.row + 1}+${this.column}`] = 5;
       else adjweghit[`${this.row + 1}+${this.column}`] = 1;
     }
+
+   
     if (this.column - 1 >= 0) {
       this.jirani.push(`${this.row}+${this.column - 1}`);
       if (this.islack) adjweghit[`${this.row}+${this.column - 1}`] = 5;

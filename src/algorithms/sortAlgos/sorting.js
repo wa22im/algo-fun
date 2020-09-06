@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Container, Button, Icon } from "semantic-ui-react";
+import { Container, Button, Icon, Input, Grid } from "semantic-ui-react";
 import "./sortCss.css";
 
 const getRandom = (min, max) => {
@@ -10,15 +10,17 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 export const Sorting = () => {
+  const [disbled, setdisbled] = useState(false);
   const [dataAyya, setdataAyya] = useState([]);
-  var arrLength=100;
+  //var arrLength=100;
+  const [arrLength, setarrLength] = useState(50);
   const [colorVariation, setColorVarition] = useState(150);
   const [windowWidth, setWidth] = useState(0);
-  const [barWidth , setBarWidth] = useState("10px")
-  const heightRange =[20 , 700]
+  const [barWidth, setBarWidth] = useState("10px");
+  const heightRange = [20, 700];
   const refTab = [];
   const createArray = () => {
-    console.log(arrLength)
+    console.log(arrLength);
     let arr = [];
     for (var i = 0; i < arrLength; i++) {
       let obj = {};
@@ -29,7 +31,6 @@ export const Sorting = () => {
 
     setdataAyya([...arr]);
     refTab.splice();
-   
   };
   const pickColor = (idx) => {
     return `hsl(${idx + colorVariation}, 87%, 45%)`;
@@ -266,7 +267,7 @@ export const Sorting = () => {
     arr[a].style.height = arr[b].style.height;
     arr[b].style.height = helper;
     // swap colors
-    await sleep(10);
+    await sleep(Math.floor(arrLength/20));
 
     arr[b].style.backgroundColor = bcolor;
     arr[a].style.backgroundColor = acolor;
@@ -289,147 +290,189 @@ export const Sorting = () => {
     }
   };
   const handleResize = () => {
-    let wid = window.innerWidth
+    let wid = window.innerWidth;
     setWidth(wid);
-   // createBar()
-   // console.log(windowWidth,window.innerWidth);
+    // createBar()
+    // console.log(windowWidth,window.innerWidth);
   };
-  const createBar=()=>{
-    if ( parseInt(window.innerWidth)<=750 ){
-    setBarWidth('5px')
-    //setarrLength( )
-    arrLength=60
-    heightRange[1]=500
-      createArray()
-  }
-  else if(parseInt(window.innerWidth)>750 && parseInt(window.innerWidth)<=1000 ) {
-    setBarWidth('5px')
-    arrLength=90
+  const createBar = () => {
+    if (parseInt(window.innerWidth) <= 750) {
+      setBarWidth(`${300 / arrLength}px`);
+     
+      heightRange[1] = 500;
+      createArray();
+    } else if (
+      parseInt(window.innerWidth) > 750 &&
+      parseInt(window.innerWidth) <= 1000
+    ) {
+      setBarWidth(`${300 / arrLength}px`);
+     
+      heightRange[1] = 600;
+      createArray();
+    } else if (
+      parseInt(window.innerWidth) > 1000 &&
+      parseInt(window.innerWidth) <= 1300
+    ) {
+      setBarWidth(`${700 / arrLength}px`);
+     
+      heightRange[1] = 600;
+      createArray();
+    } else {
+      setBarWidth(`${800 / arrLength}px`);
+   
 
-    //setarrLength(80)
-    heightRange[1]=600
-    createArray()
-  }
-  else if(parseInt(window.innerWidth)>1000 && parseInt(window.innerWidth)<=1300 ) {
-    setBarWidth('7px')
-    arrLength=120
+      heightRange[1] = 700;
 
-    //setarrLength(80)
-    heightRange[1]=600
-    createArray()
-  }
-  else{
-    setBarWidth('7px')
-   // setarrLength(100)
-    arrLength=100
-
-    heightRange[1]=700
-
-    createArray()
-
-  }
-  }
+      createArray();
+    }
+  };
   useEffect(() => {
-    setWidth(window.innerWidth);
-    createBar()
-  window.addEventListener("resize", handleResize);
-    return(()=>{
-      console.log('clean up')
-    })
-  }, [barWidth]);
+    if (disbled == false) {
+      setWidth(window.innerWidth);
+      createBar();
+      window.addEventListener("resize", handleResize);
+    }
+    return () => {
+      console.log("clean up");
+    };
+  }, [barWidth, windowWidth, arrLength]);
   return (
-
-
     <Container
-    style={{
-      margin: "10px",
-      width:'100%'
-    }}
+      style={{
+        padding: "10px",
+        width: "100%",
+      }}
     >
-      <Button.Group
-        style={{
-          margin: "10px",
-          width:'100%'
-        }}
-      >
-        <Button
-          onClick={() => {
-            mergeSort(refTab, 0, refTab.length - 1);
-          }}
+      <Grid.Row>
+        <Button.Group
+          color="blue"
+        
         >
-          Merge sort
-        </Button>
-        <Button
-          onClick={() => {
-            funnyMerge(refTab);
-          }}
-        >
-          have fun with merge
-        </Button>
-        <Button
-          onClick={() => {
-            quickSort(refTab, 0, refTab.length - 1);
-          }}
-        >
-          QuickSort
-        </Button>
-        <Button
-          onClick={() => {
-            selectionSort(refTab);
-          }}
-        >
-          selection sort
-        </Button>
-        <Button
-          onClick={() => {
-            insertionSort(refTab);
-          }}
-        >
-          insertion sort
-        </Button>
-        <Button
-          onClick={() => {
-            bubbleSort(refTab);
-          }}
-        >
-          bubbleSort
-        </Button>
-        <Button onClick={createArray}>restart</Button>
-        <Button
-          content="change color variations"
-          icon="plus"
-          onClick={() => {
-            setColorVarition(colorVariation + 10);
-            createArray();
-          }}
-        ></Button>
-        <Button
-          icon
-          onClick={() => {
-            setColorVarition(colorVariation - 10);
-            createArray();
-          }}
-        >
-          <Icon name="minus" />
-        </Button>
-      </Button.Group>
-      <Container
-      textAlign='center'
-      >
-      <div className="containerare">
-        {dataAyya.map((value, index) => (
-          <div
-            ref={(ref) => refTab.push(ref)}
-            className="bars"
-            key={index}
-            style={{
-              height: `${value.twil}px`,
-              backgroundColor: `${value.color}`,
-              width:barWidth
+          <Button
+            disabled={disbled}
+            onClick={async () => {
+              setdisbled(true);
+              await mergeSort(refTab, 0, refTab.length - 1);
+              setdisbled(false);
             }}
-          ></div>
-        ))}
-      </div>
+          >
+            Merge sort
+          </Button>
+          <Button
+            disabled={disbled}
+            onClick={async () => {
+              setdisbled(true);
+
+              await funnyMerge(refTab);
+              setdisbled(false);
+            }}
+          >
+            have fun with merge
+          </Button>
+          <Button
+            disabled={disbled}
+            onClick={async () => {
+              setdisbled(true);
+
+              await quickSort(refTab, 0, refTab.length - 1);
+              setdisbled(false);
+            }}
+          >
+            QuickSort
+          </Button>
+          </Button.Group>
+          <Button.Group 
+          color='red'
+          >
+          <Button
+            disabled={disbled}
+            onClick={() => {
+              setdisbled(true);
+
+              selectionSort(refTab);
+              setdisbled(false);
+            }}
+          >
+            selection sort
+          </Button>
+          <Button
+            disabled={disbled}
+            onClick={async () => {
+              setdisbled(true);
+
+              await insertionSort(refTab);
+              setdisbled(false);
+            }}
+          >
+            insertion sort
+          </Button>
+          <Button
+            disabled={disbled}
+            onClick={async () => {
+              setdisbled(true);
+
+              await bubbleSort(refTab);
+              setdisbled(false);
+            }}
+          >
+            bubbleSort
+          </Button>
+        </Button.Group>
+      </Grid.Row>
+      <Grid.Row>
+        <Button.Group
+        color='green'
+        >
+          <Button disabled={disbled} onClick={createArray}>
+            restart
+          </Button>
+          <Button
+            disabled={disbled}
+            content="change color variations"
+            icon="plus"
+            onClick={() => {
+              setColorVarition(colorVariation + 10);
+              createArray();
+            }}
+          ></Button>
+          <Button
+            disabled={disbled}
+            icon
+            onClick={() => {
+              setColorVarition(colorVariation - 10);
+              createArray();
+            }}
+          >
+            <Icon name="minus" />
+          </Button>
+        </Button.Group>
+        <Input
+          disabled={disbled}
+          type="range"
+          min={10}
+          max={120}
+          value={arrLength}
+          onChange={(e) => {
+            let m = parseInt(e.target.value);
+            setarrLength(m);
+          }}
+        ></Input>
+      </Grid.Row>
+      <Container textAlign="center">
+        <div className="containerare">
+          {dataAyya.map((value, index) => (
+            <div
+              ref={(ref) => refTab.push(ref)}
+              className="bars"
+              key={index}
+              style={{
+                height: `${value.twil}px`,
+                backgroundColor: `${value.color}`,
+                width: barWidth,
+              }}
+            ></div>
+          ))}
+        </div>
       </Container>
     </Container>
   );

@@ -1,6 +1,7 @@
 .containermap {
   width: 100%;
-  margin: auto;
+  padding-left: 5%;
+  padding-right: 5%;
   height: 100vh;
 }
 
@@ -14,6 +15,10 @@
   -webkit-transition: background-color 1000ms linear;
   -ms-transition: background-color 1000ms linear;
   transition: background-color 1000ms linear;
+  font-family: "Open Sans", sans-serif;
+  font-weight: lighter;
+  text-align: center;
+  font-size: 10px;
 }
 
 .grid-container-div:hover {
@@ -25,10 +30,7 @@
   -ms-transition: box-shadow border-radius background-color 100ms linear;
   transition: box-shadow border-radius background-color 100ms linear;
 }
-.selected {
-  border-radius: 3px;
-  transition: all 0.3s ease;
-}
+
 .first-node {
   background-color: #011627 !important;
   -webkit-transition: background-color 1000ms linear;

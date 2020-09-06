@@ -38,6 +38,7 @@ export const dj = (graph, ss, endd) => {
       };
     let adj = graph.get(currentNode.name).adjList;
     for (const [key, val] of Object.entries(adj)) {
+      console.log(val)
       let m = new Node(key, currentNode.name, val + currentNode.distance);
       if (graph.get(m.name).isWall) continue;
       if (
@@ -82,7 +83,6 @@ export const Astar = (graph, start, endd) => {
   let count = 0
   while (openList.heapArray.length > 0 && count<graph.size *4) {
     currentNode = openList.pop();
-    console.log(currentNode.name);
     closedList.push(currentNode);
     if (currentNode.name == endd) {
       let path = [];
@@ -96,10 +96,7 @@ export const Astar = (graph, start, endd) => {
       let exists = true
 
       if (closedList.findIndex((n) => n.name == key) != -1) {
-        console.log(
-          closedList.findIndex((n) => n.name == key),
-          "index"
-        );
+    
         exists =false
         continue;
       }
@@ -149,3 +146,62 @@ const findparent = (theway, nodei, root) => {
     findparent(theway, theway[x], root);
   }
 };
+
+export const bfs = ( gridMap , startt , endpoint )=>{
+  const visited =[];
+  const queue = [];
+  const path = []
+  visited.push(startt)
+  queue.push(startt)  
+  while(queue.length>0){
+    let current = queue.shift()// dequeue
+    if ( current==endpoint) return path ; 
+    path.unshift(current)
+    let neibghours = gridMap.get(current).jirani ;
+    console.log(current , neibghours )
+    
+      for ( var i =0 ; i<=neibghours.length-1 ; i++){
+        let val = neibghours[i]
+        if (gridMap.get(val).isWall)
+        continue ;
+        console.log(val)
+        if  ( visited.indexOf(val)==-1){
+        visited.push(val );
+        queue.push(val) // enqueue
+      }
+    }  
+  }
+  return [] ; 
+}
+
+
+
+export const dfs = ( gridMap , startt , endpoint )=>{
+ const stack = [] ; 
+ const visited =[ ] ; 
+ const path = []; 
+ stack.push(startt) ; 
+ visited.push(startt)
+ while(stack.length>0){
+   let current = stack.pop()
+   path.push(current)
+   if ( current == endpoint) return path  ; 
+   let adjList = gridMap.get(current).jirani
+   visited.push(current)
+
+   for ( var i=adjList.length-1  ; i>=0 ;i--){
+    let val = adjList[i]
+    if (gridMap.get(val).isWall)
+    continue ;
+     if ( visited.indexOf(val)==-1){  
+       stack.push(val)
+       visited.push(current)
+
+
+     }
+   }
+
+ }
+
+  return [] ; 
+}

@@ -2,16 +2,17 @@ import React, { useState, useEffect } from "react";
 import MapNode from "./mapNode";
 import { Grid, Button, DropdownSearchInput, Input } from "semantic-ui-react";
 import _ from "lodash";
-import { createMazeDFS, dj, Astar } from "./alghorithms";
+import { dfs, bfs, dj, Astar } from "./alghorithms";
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 const MapPathFinding = (props) => {
-  
-  const [NUMROWS, setNUMROWS] = useState(25)
-  const [NUMCOLUMNS, setNUMCOLUMNS] = useState(40)
+  const [finishedFindinf, setfinishedFindinf] = useState(false);
+  const [disabled, setdisabled] = useState(false);
+  const [NUMROWS, setNUMROWS] = useState(25);
+  const [NUMCOLUMNS, setNUMCOLUMNS] = useState(40);
   const [refresh, setrefresh] = useState(0);
-  const [valueSlider , setvalueslider]= useState(2);
+  const [valueSlider, setvalueslider] = useState(2);
 
   const [gridGenerated, setgridGenerated] = useState(false);
   const [startPoint, setstartPoint] = useState("");
@@ -177,7 +178,7 @@ const MapPathFinding = (props) => {
     gridGraph.get("1+5").firstNode = true;
 
     gridGraph.get("2+2").endNode = true;
-    
+
     setendPoint("2+2");
     setGridGraph(gridGraph);
     setgridGenerated(true);
@@ -217,27 +218,27 @@ const MapPathFinding = (props) => {
     }
     if (thePath) {
       for (var i = thePath.length - 1; i >= 0; i--) {
-        if (pathnodes.includes(thePath[i])) {
-          gridGraph.get(thePath[i]).ref.style.backgroundColor ="#7265AD"
-          
-        gridGraph.get(thePath[i]).ref.style.borderRadius = "5px";
+        if (pathnodes.indexOf(thePath[i]) != -1) {
+          gridGraph.get(thePath[i]).ref.style.backgroundColor = "green";
 
-        gridGraph.get(thePath[i]).ref.style.boxShadow =
-          " 5px 0px 10px 0px black";
+          gridGraph.get(thePath[i]).ref.style.borderRadius = "5px";
+
+          gridGraph.get(thePath[i]).ref.style.boxShadow =
+            " 5px 0px 10px 0px black";
+        } else {
+          gridGraph.get(thePath[i]).ref.style.backgroundColor =
+            colorspath[colornumb];
+          gridGraph.get(thePath[i]).ref.style.borderRadius = "5px";
+
+          gridGraph.get(thePath[i]).ref.style.boxShadow =
+            " 5px 0px 10px 0px black";
+          pathnodes.push(thePath[i]);
+          await sleep(1);
         }
-        else{
-        gridGraph.get(thePath[i]).ref.style.backgroundColor =
-          colorspath[colornumb];
-        gridGraph.get(thePath[i]).ref.style.borderRadius = "5px";
-
-        gridGraph.get(thePath[i]).ref.style.boxShadow =
-          " 5px 0px 10px 0px black";
-        pathnodes.push(thePath[i]);
-        await sleep(1);}
       }
     }
   };
-  const astarSearch = async (startPointt,endPointt,colorsnum=0) => {
+  const astarSearch = async (startPointt, endPointt, colorsnum = 0) => {
     const [thePath, vistedNodes] = Astar(gridGraph, startPointt, endPointt);
     if (thePath.length == 0) return;
     const colorspath = ["black", "#177e89"];
@@ -255,17 +256,17 @@ const MapPathFinding = (props) => {
     if (thePath) {
       for (var i = thePath.length - 1; i >= 0; i--) {
         if (pathnodes.includes(thePath[i])) {
-          gridGraph.get(thePath[i]).ref.style.backgroundColor ="blue"
-          
-        gridGraph.get(thePath[i]).ref.style.borderRadius = "5px";
+          gridGraph.get(thePath[i]).ref.style.backgroundColor = "blue";
 
-        gridGraph.get(thePath[i]).ref.style.boxShadow =
-          " 5px 0px 10px 0px black";
-        };
-        gridGraph.get(thePath[i]).ref.style.backgroundColor = colorspath[colorsnum];
+          gridGraph.get(thePath[i]).ref.style.borderRadius = "5px";
+
+          gridGraph.get(thePath[i]).ref.style.boxShadow =
+            " 5px 0px 10px 0px black";
+        }
+        gridGraph.get(thePath[i]).ref.style.backgroundColor =
+          colorspath[colorsnum];
         gridGraph.get(thePath[i]).ref.style.borderRadius = "10px";
-        pathnodes.push(thePath[i])
-        
+        pathnodes.push(thePath[i]);
       }
     }
   };
@@ -292,7 +293,7 @@ const MapPathFinding = (props) => {
       pickPoints.push(endPoint);
       for (var i = 0; i < pickPoints.length - 1; i++) {
         await djikstra(pickPoints[i], pickPoints[i + 1], i % 2);
-        await sleep(10)
+        await sleep(10);
       }
       pickPoints.pop();
       pickPoints.shift();
@@ -301,14 +302,13 @@ const MapPathFinding = (props) => {
     }
     pathnodes.splice(0, pathnodes.length);
   };
-  const handleAstar = async ()=>{
+  const handleAstar = async () => {
     if (pickPoints.length > 0) {
       pickPoints.unshift(startPoint);
       pickPoints.push(endPoint);
       for (var i = 0; i < pickPoints.length - 1; i++) {
         await astarSearch(pickPoints[i], pickPoints[i + 1], i % 2);
-        await sleep(100)
-
+        await sleep(100);
       }
       pickPoints.pop();
       pickPoints.shift();
@@ -317,79 +317,161 @@ const MapPathFinding = (props) => {
     }
     pathnodes.splice(0, pathnodes.length);
   };
-   const changeRangeMa=(e)=>{
-  let rangevalue = parseInt(e.target.value)
+  const handleBfs = async () => {
+    for (var i = 0; i < pickPoints.length; i++) {
+      gridGraph.get(pickPoints[i]).isPickPoint = false;
+    }
+    setGridGraph(gridGraph);
+    setPickPoinst([...[]]);
+    let m = bfs(gridGraph, startPoint, endPoint);
+    for (var i = m.length - 2; i >= 0; i--) {
+      if (m[i] === "0+0") continue;
+      gridGraph.get(m[i]).ref.style.backgroundColor = "yellow";
+      gridGraph.get(m[i]).ref.style.boxShadow = "1px 0px 10px 0px black";
+      gridGraph.get(m[i]).ref.innerHTML = m.length - i;
 
+      gridGraph.get(m[i]).ref.style.borderRadius = "5px";
+      await sleep(1);
+    }
+  };
+  const handleDFS = async () => {
+    for (var i = 0; i < pickPoints.length; i++) {
+      gridGraph.get(pickPoints[i]).isPickPoint = false;
+    }
+    setGridGraph(gridGraph);
+    setPickPoinst([...[]]);
 
-   }
-  
+    let m = dfs(gridGraph, startPoint, endPoint);
+    for (var i = 0; i < m.length - 1; i++) {
+      if (m[i] === "0+0") continue;
+      gridGraph.get(m[i]).ref.style.backgroundColor = "yellow";
+      gridGraph.get(m[i]).ref.style.boxShadow = "1px 0px 10px 0px black";
+      gridGraph.get(m[i]).ref.innerHTML = i;
+
+      await sleep(1);
+    }
+  };
+
+  const changeRangeMa = (e) => {
+    let rangevalue = parseInt(e.target.value);
+  };
+
   useEffect(() => {
     createMapGrid();
   }, []);
   return (
     <div className="containermap">
-      <Button
-        onClick={() => {
-          generateRandomWalls();
-        }}
-      >
-        generate Random Walls
-      </Button>
-      <Button
-        onClick={() => {
-          addLackOfWater();
-        }}
-      >
-        Add lack of water{" "}
-      </Button>
-      <Button
-        onClick={async () => {
-          //await astarSearch();
-          await handleAstar()
-          //console.log(Astar(gridGraph , startPoint , endPoint))
-        }}
-      >
-        Astar
-      </Button>
-
-      <Button
-        onClick={async () => {
-          await handleDjk();
-        }}
-      >
-        dju{" "}
-      </Button>
-      <Button
-        onClick={() => {
-          cleanBoard();
-        }}
-      >
-        Clean Board{" "}
-      </Button>
-      <Button
-        onClick={() => {
-          AddPickPoint();
-        }}
-      >
-        Add Pick Point{" "}
-      </Button>
-      <Grid relaxed="very" textAlign="center">
+      <Grid>
         <Grid.Row>
-          
+          <Button.Group color="black">
+            <Button
+              disabled={disabled}
+              onClick={async () => {
+                setdisabled(true);
+                await handleAstar();
+              }}
+            >
+              A*
+            </Button>
+            <Button
+              disabled={disabled}
+              onClick={async () => {
+                setdisabled(true);
+                await handleDjk();
+              }}
+            >
+              dijkstra{" "}
+            </Button>
+          </Button.Group>
+          <Button.Group color="green">
+            <Button
+              disabled={disabled}
+              onClick={async () => {
+                setdisabled(true);
+                await handleBfs();
+              }}
+            >
+              Breadth First Search
+            </Button>
+            <Button
+              disabled={disabled}
+              onClick={async () => {
+                setdisabled(true);
+                await handleDFS();
+              }}
+            >
+              Depth First Search
+            </Button>
+          </Button.Group>
         </Grid.Row>
+        <Grid.Row>
+          <Button
+            disabled={disabled}
+            color="red"
+            onClick={() => {
+              generateRandomWalls();
+            }}
+          >
+            Generate Random Walls
+          </Button>
+          <Button
+            disabled={disabled}
+            color="blue"
+            onClick={() => {
+              addLackOfWater();
+            }}
+          >
+            Add lack of water{" "}
+          </Button>
+          <Button
+            disabled={disabled}
+            onClick={() => {
+              AddPickPoint();
+            }}
+          >
+            Add Pick Point{" "}
+          </Button>
+
         
+          <Button
+            disabled={finishedFindinf}
+            color="teal"
+            onClick={() => {
+              setdisabled(false);
+
+              cleanBoard();
+            }}
+          >
+            Clean Board{" "}
+          </Button>
+          { disabled? <Button
+            color="yellow"
+            onClick={() => {
+              setdisabled(false);
+              setrefresh(refresh - 1);
+            }}
+          >
+            Clean path{" "}
+          </Button> :''}
+        </Grid.Row>
+      </Grid>
+
+      <Grid relaxed="very" textAlign="center">
         <Grid.Row>
           {!gridGenerated
             ? ""
             : _.times(NUMCOLUMNS, (columnIndex) => {
                 return (
-                  <Grid.Row key={columnIndex * Math.random() * 10}>
+                  <Grid.Row 
+                  
+                  key={columnIndex * Math.random() * 10}>
                     {_.times(NUMROWS, (rowIndex) => {
                       let index = rowIndex + "+" + columnIndex;
-
                       return (
                         <Grid.Column key={rowIndex * Math.random() * 10}>
                           <div
+                                            disabled={true}
+
                             ref={(ref) => (gridGraph.get(index).ref = ref)}
                             onMouseLeave={() => {
                               handleMouseEnter(index);
