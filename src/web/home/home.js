@@ -82,10 +82,7 @@ HomepageHeading.propTypes = {
   mobile: PropTypes.bool,
 };
 
-/* Heads up!
- * Neither Semantic UI nor Semantic UI React offer a responsive navbar, however, it can be implemented easily.
- * It can be more complicated, but you can create really flexible markup.
- */
+
 class DesktopContainer extends Component {
   state = {};
 
@@ -193,15 +190,8 @@ MobileContainer.propTypes = {
 };
 
 const ResponsiveContainer = ({ children }) => (
-  /* Heads up!
-   * For large applications it may not be best option to put all page into these containers at
-   * they will be rendered twice for SSR.
-   */
   <React.Fragment>
-    <MediaContextProvider>
       <DesktopContainer>{children}</DesktopContainer>
-      <MobileContainer>{children}</MobileContainer>
-    </MediaContextProvider>
     <Footer></Footer>
   </React.Fragment>
 );

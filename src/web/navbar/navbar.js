@@ -19,7 +19,7 @@ export const Navbar = () => {
         </Link>
         <Link to="/sort">
           <Menu.Item as="a">sort visualization</Menu.Item>
-        </Link>*
+        </Link>
         <Link to="/map">
           <Menu.Item as="a">Graph visualization</Menu.Item>
         </Link>
