@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/algo-fun/static/css/main.028f193b.chunk.css",
+    "main.js": "/algo-fun/static/js/main.1e8b101c.chunk.js",
+    "main.js.map": "/algo-fun/static/js/main.1e8b101c.chunk.js.map",
+    "runtime-main.js": "/algo-fun/static/js/runtime-main.08d5f547.js",
+    "runtime-main.js.map": "/algo-fun/static/js/runtime-main.08d5f547.js.map",
+    "static/css/2.5455c339.chunk.css": "/algo-fun/static/css/2.5455c339.chunk.css",
+    "static/js/2.46fd6be5.chunk.js": "/algo-fun/static/js/2.46fd6be5.chunk.js",
+    "static/js/2.46fd6be5.chunk.js.map": "/algo-fun/static/js/2.46fd6be5.chunk.js.map",
+    "index.html": "/algo-fun/index.html",
+    "precache-manifest.11715fc6988d23540b75d151273e289a.js": "/algo-fun/precache-manifest.11715fc6988d23540b75d151273e289a.js",
+    "service-worker.js": "/algo-fun/service-worker.js",
+    "static/css/2.5455c339.chunk.css.map": "/algo-fun/static/css/2.5455c339.chunk.css.map",
+    "static/css/main.028f193b.chunk.css.map": "/algo-fun/static/css/main.028f193b.chunk.css.map",
+    "static/js/2.46fd6be5.chunk.js.LICENSE.txt": "/algo-fun/static/js/2.46fd6be5.chunk.js.LICENSE.txt",
+    "static/media/semantic.min.css": "/algo-fun/static/media/outline-icons.ef60a4f6.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.08d5f547.js",
+    "static/css/2.5455c339.chunk.css",
+    "static/js/2.46fd6be5.chunk.js",
+    "static/css/main.028f193b.chunk.css",
+    "static/js/main.1e8b101c.chunk.js"
+  ]
+}
