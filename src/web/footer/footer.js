@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <div
       style={{
-        padding: "10px",
+        paddingTop: "10px",
       }}
     >
       <Container>
@@ -19,9 +19,9 @@ export default function Footer() {
                   <Icon
                    name='linkedin'
                   ></Icon>
-                  <a href="https://github.com/wa22im">
+                  <a href="https://www.linkedin.com/in/wassim-miledi-7a7915189/">
                     {" "}
-                    Wa22im
+                    Wassim Miladi
                   </a>
                 </List.Item>
                 <List.Item 
@@ -29,9 +29,9 @@ export default function Footer() {
                   <Icon
                    name='github'
                   ></Icon>
-                  <a href="">
+                  <a href="https://github.com/wa22im">
                     {" "}
-                    Wassim Miladi
+                    Wa22im
                   </a>
                 </List.Item>
                 <List.Item
@@ -48,8 +48,9 @@ export default function Footer() {
                 </List.Item>
               </List>
             </Grid.Column>
-            
+         
             <Grid.Column width={7}>
+              <Header as="h4">Code on github , feel free to modify it as u like</Header>
              
             </Grid.Column>
           </Grid.Row>

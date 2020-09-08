@@ -1,6 +1,6 @@
 import { createMedia } from "@artsy/fresnel";
 import PropTypes from "prop-types";
-import React, { Component , useState } from "react";
+import React, { Component, useState } from "react";
 import {
   Button,
   Container,
@@ -12,7 +12,7 @@ import {
   Visibility,
 } from "semantic-ui-react";
 import { Splitext } from "./splitext";
-import { Navbar } from "../navbar/navbar";
+import Footer from "../footer/footer";
 
 const { MediaContextProvider, Media } = createMedia({
   breakpoints: {
@@ -34,7 +34,6 @@ const HomepageHeading = ({ mobile }) => {
   return (
     <Container text>
       <div onMouseEnter={handleMouseEnter}>
-     
         <Header
           as="h1"
           content="Hello stranger"
@@ -46,16 +45,18 @@ const HomepageHeading = ({ mobile }) => {
             marginTop: mobile ? "1.5em" : "3em",
           }}
         />
-           {showOn ? (
+        {showOn ? (
           ""
         ) : (
           <h4
-         style={{
-           marginRight:'180px',
-           color:'yellow'
-         }}
-            
-          > i can't be typed :(</h4>
+            style={{
+              marginRight: "180px",
+              color: "yellow",
+            }}
+          >
+            {" "}
+            i can't be typed :(
+          </h4>
         )}
       </div>
 
@@ -105,7 +106,7 @@ class DesktopContainer extends Component {
           <Segment
             inverted
             textAlign="center"
-            style={{ minHeight: '100vh', padding: "1em 0em" }}
+            style={{ minHeight: "100vh", padding: "1em 0em" }}
             vertical
           >
             <HomepageHeading />
@@ -196,10 +197,13 @@ const ResponsiveContainer = ({ children }) => (
    * For large applications it may not be best option to put all page into these containers at
    * they will be rendered twice for SSR.
    */
-  <MediaContextProvider>
-    <DesktopContainer>{children}</DesktopContainer>
-    <MobileContainer>{children}</MobileContainer>
-  </MediaContextProvider>
+  <React.Fragment>
+    <MediaContextProvider>
+      <DesktopContainer>{children}</DesktopContainer>
+      <MobileContainer>{children}</MobileContainer>
+    </MediaContextProvider>
+    <Footer></Footer>
+  </React.Fragment>
 );
 
 ResponsiveContainer.propTypes = {

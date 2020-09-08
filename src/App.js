@@ -10,7 +10,6 @@ import { Navbar } from "./web/navbar/navbar";
 import HomepageLayout, { Home } from "./web/home/home";
 
 import MapPathFinding from "./algorithms/graph/mapPathFinding";
-import Footer from "./web/footer/footer";
 function App() {
   return (
     <Router>
@@ -41,7 +40,6 @@ function App() {
           <MapPathFinding></MapPathFinding>
         </Route>
       </Switch>
-      <Footer></Footer>
     </Router>
   );
 }

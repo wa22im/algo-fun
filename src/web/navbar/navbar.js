@@ -19,13 +19,14 @@ export const Navbar = () => {
         </Link>
         <Link to="/sort">
           <Menu.Item as="a">sort algos</Menu.Item>
+        </Link>*
+        <Link to="/map">
+          <Menu.Item as="a">map</Menu.Item>
         </Link>
         <Link to="/heap">
           <Menu.Item as="a">heap</Menu.Item>
         </Link>
-        <Link to="/map">
-          <Menu.Item as="a">map</Menu.Item>
-        </Link>
+      
       </Container>
     </Menu>
   );
