@@ -17,7 +17,7 @@ export const Navbar = () => {
             Home
           </Menu.Item>
         </Link>
-        <Link to="/sortv2">
+        <Link to="/sort">
           <Menu.Item as="a">sort algos</Menu.Item>
         </Link>
         <Link to="/heap">

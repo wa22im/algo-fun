@@ -1,4 +1,5 @@
 import Heap from "heap-js";
+import HeapModal from './heapModal'
 
 import React, { useState, useEffect } from "react";
 import {
@@ -19,6 +20,10 @@ import Expe from "./expe";
 import Tree from "./tree";
 
 const MyHeap = () => {
+  
+  
+  const [openModel, setopenModel] = useState(true);
+
   const [serfHeap, setSerfHeap] = useState(0);
   const customPriorityComparatorlower = (a, b) => a["valuee"] - b["valuee"];
 
@@ -162,7 +167,12 @@ const MyHeap = () => {
     setUpperHeaps([...uph]);
   };
 
-  return (
+  return  openModel?  <HeapModal
+  onclose ={()=>{
+    setopenModel(false)
+  }}
+  open = {openModel}
+/>:(
     <Container
       style={{
         width: "90%",
@@ -173,8 +183,7 @@ const MyHeap = () => {
     >
       <Header>Fraudulent Activity Notifications</Header>
       <Container>
-        in ordre to solve this , we used Heap data structre in ordre to keep
-        finding the median .
+       in this table , you can find the day of the alert , money spent and value of median .
       </Container>
 
       <Table
@@ -206,7 +215,7 @@ const MyHeap = () => {
         <Form.Group inline>
           <Form.Field>
             <Label basic color="teal" pointing="right">
-              choose follow days ...
+              choose number of days ...
             </Label>
             <Input
               name="numdays"
@@ -253,7 +262,7 @@ const MyHeap = () => {
         <Grid.Row>
           {expe.map((exp, idx) => (
             <Expe
-              color={daysNotif.indexOf(idx) == -1 ? null : "red"}
+              color={daysNotif.indexOf(idx) == -1 ? 'white' : "red"}
               key={idx + "g" + exp}
               exp={exp}
               idx={idx}
@@ -293,11 +302,11 @@ const MyHeap = () => {
       >
         <Grid celled width={10}>
           <Grid.Column width={8}>
-            <h3> heap with biggest values / min heap </h3>
+            <h3> max heap </h3>
             <Tree data={lowHeaps[serfHeap]}></Tree>
           </Grid.Column>
           <Grid.Column width={4}>
-            <h3> heap with smallest values /max heap </h3>
+            <h3> min heap </h3>
 
             <Tree data={upperHeaps[serfHeap]}></Tree>
           </Grid.Column>

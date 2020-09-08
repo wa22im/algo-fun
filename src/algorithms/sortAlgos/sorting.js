@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Container, Button, Icon, Input, Grid } from "semantic-ui-react";
 import "./sortCss.css";
+import SortModal from "./sortModal";
 
 const getRandom = (min, max) => {
   return Math.floor(Math.random() * (max - min) + min);
@@ -10,6 +11,8 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 export const Sorting = () => {
+  const [openModel, setopenModel] = useState(true);
+
   const [disbled, setdisbled] = useState(false);
   const [dataAyya, setdataAyya] = useState([]);
   //var arrLength=100;
@@ -39,12 +42,13 @@ export const Sorting = () => {
   const mergee = async (tab, startt, mid, endd) => {
     let startMid = mid + 1;
 
-    if (dataAyya[mid].twil <= dataAyya[startMid].twil) return;
+    if (dataAyya[mid].twil < dataAyya[startMid].twil) return;
     while (startt <= mid && startMid <= endd) {
       if (dataAyya[startt].twil < dataAyya[startMid].twil) {
         startt++;
       } else {
         let valueh = tab[startMid].style.height;
+
         let value = dataAyya[startMid].twil;
         let indexx = startMid;
         let firstColor = tab[startMid].style.backgroundColor;
@@ -124,7 +128,7 @@ export const Sorting = () => {
   const reverseMerge = async (tab, startt, mid, endd) => {
     let startMid = mid + 1;
 
-    if (dataAyya[startMid].twil <= dataAyya[mid].twil) return;
+    if (dataAyya[startMid].twil < dataAyya[mid].twil) return;
     while (startt <= mid && startMid <= endd) {
       if (dataAyya[startt].twil >= dataAyya[startMid].twil) {
         startt++;
@@ -171,12 +175,12 @@ export const Sorting = () => {
     }
   };
 
-  const funnyMerge = async (tab) => {
+  /*const funnyMerge = async (tab) => {
     await mergeSort(tab, Math.floor(tab.length / 2) + 1, tab.length - 1);
     await reverseSortMerge(tab, 0, Math.floor(tab.length / 2));
     await sleep(1000);
     await reverseSortMerge(tab, 0, tab.length - 1);
-  };
+  };*/
 
   const swap = async (arr, a, b) => {
     let pivotColor = arr[b].style.backgroundColor;
@@ -267,7 +271,7 @@ export const Sorting = () => {
     arr[a].style.height = arr[b].style.height;
     arr[b].style.height = helper;
     // swap colors
-    await sleep(Math.floor(arrLength/20));
+    await sleep(Math.floor(arrLength / 20));
 
     arr[b].style.backgroundColor = bcolor;
     arr[a].style.backgroundColor = acolor;
@@ -298,7 +302,7 @@ export const Sorting = () => {
   const createBar = () => {
     if (parseInt(window.innerWidth) <= 750) {
       setBarWidth(`${300 / arrLength}px`);
-     
+
       heightRange[1] = 500;
       createArray();
     } else if (
@@ -306,7 +310,7 @@ export const Sorting = () => {
       parseInt(window.innerWidth) <= 1000
     ) {
       setBarWidth(`${300 / arrLength}px`);
-     
+
       heightRange[1] = 600;
       createArray();
     } else if (
@@ -314,17 +318,63 @@ export const Sorting = () => {
       parseInt(window.innerWidth) <= 1300
     ) {
       setBarWidth(`${700 / arrLength}px`);
-     
+
       heightRange[1] = 600;
       createArray();
     } else {
       setBarWidth(`${800 / arrLength}px`);
-   
 
       heightRange[1] = 700;
 
       createArray();
     }
+  };
+  const getNum = (num, index) => {
+    const strNum = String(num);
+    let end = strNum.length - 1;
+    const foundNum = strNum[end - index];
+
+    if (foundNum === undefined) return 0;
+    else return foundNum;
+  };
+
+  const largestNum = (arr) => {
+    let largest = "0";
+
+    arr.forEach((num) => {
+      const strNum = String(num.twil);
+
+      if (strNum.length > largest.length) largest = strNum;
+    });
+
+    return largest.length;
+  };
+  const radixSort = async () => {
+    var arr = dataAyya;
+    let maxLength = largestNum(arr);
+    for (let i = 0; i < maxLength; i++) {
+      let buckets = Array.from({ length: 10 }, () => []);
+      for (let j = 0; j < arr.length; j++) {
+        let num = getNum(arr[j].twil, i);
+
+        if (num !== undefined) buckets[num].push(arr[j]);
+      }
+      arr = buckets.flat();
+      for (var k = 0; k < dataAyya.length; k++) {
+        let colorhold = refTab[k].style.backgroundColor;
+        refTab[k].style.backgroundColor = "black";
+        refTab[k].style.height = arr[k].twil + "px";
+        let duree;
+
+        if (arrLength > 80) duree = 30;
+        else {
+          duree = 80;
+        }
+        await sleep(duree);
+        refTab[k].style.backgroundColor = colorhold;
+      }
+    }
+    await sleep(1);
   };
   useEffect(() => {
     if (disbled == false) {
@@ -336,7 +386,14 @@ export const Sorting = () => {
       console.log("clean up");
     };
   }, [barWidth, windowWidth, arrLength]);
-  return (
+  return openModel ? (
+    <SortModal
+      onclose={() => {
+        setopenModel(false);
+      }}
+      open={openModel}
+    />
+  ) : (
     <Container
       style={{
         padding: "10px",
@@ -344,10 +401,17 @@ export const Sorting = () => {
       }}
     >
       <Grid.Row>
-        <Button.Group
-          color="blue"
-        
-        >
+        <Button.Group color="blue">
+          <Button
+            disabled={disbled}
+            onClick={async () => {
+              setdisbled(true);
+              await radixSort();
+              setdisbled(false);
+            }}
+          >
+            Radix Sort
+          </Button>
           <Button
             disabled={disbled}
             onClick={async () => {
@@ -358,17 +422,7 @@ export const Sorting = () => {
           >
             Merge sort
           </Button>
-          <Button
-            disabled={disbled}
-            onClick={async () => {
-              setdisbled(true);
 
-              await funnyMerge(refTab);
-              setdisbled(false);
-            }}
-          >
-            have fun with merge
-          </Button>
           <Button
             disabled={disbled}
             onClick={async () => {
@@ -380,10 +434,8 @@ export const Sorting = () => {
           >
             QuickSort
           </Button>
-          </Button.Group>
-          <Button.Group 
-          color='red'
-          >
+        </Button.Group>
+        <Button.Group color="red">
           <Button
             disabled={disbled}
             onClick={() => {
@@ -420,13 +472,12 @@ export const Sorting = () => {
         </Button.Group>
       </Grid.Row>
       <Grid.Row>
-        <Button.Group
-        color='green'
-        >
-          <Button disabled={disbled} onClick={createArray}>
+        <Button.Group>
+          <Button color="yellow" disabled={disbled} onClick={createArray}>
             restart
           </Button>
           <Button
+            color="green"
             disabled={disbled}
             content="change color variations"
             icon="plus"
@@ -436,6 +487,7 @@ export const Sorting = () => {
             }}
           ></Button>
           <Button
+            color="green"
             disabled={disbled}
             icon
             onClick={() => {
@@ -449,7 +501,7 @@ export const Sorting = () => {
         <Input
           disabled={disbled}
           type="range"
-          min={10}
+          min={30}
           max={120}
           value={arrLength}
           onChange={(e) => {

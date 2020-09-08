@@ -3,10 +3,13 @@ import MapNode from "./mapNode";
 import { Grid, Button, DropdownSearchInput, Input } from "semantic-ui-react";
 import _ from "lodash";
 import { dfs, bfs, dj, Astar } from "./alghorithms";
+import './grid.css'
+import GraphModal from "./graphModel";
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 const MapPathFinding = (props) => {
+  const [openModel  , setopenModel]= useState(true)
   const [finishedFindinf, setfinishedFindinf] = useState(false);
   const [disabled, setdisabled] = useState(false);
   const [NUMROWS, setNUMROWS] = useState(25);
@@ -359,7 +362,12 @@ const MapPathFinding = (props) => {
   useEffect(() => {
     createMapGrid();
   }, []);
-  return (
+  return openModel?  <GraphModal
+    onclose ={()=>{
+      setopenModel(false)
+    }}
+    open = {openModel}
+  />: (
     <div className="containermap">
       <Grid>
         <Grid.Row>

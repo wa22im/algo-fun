@@ -8,9 +8,9 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Sorting from "./algorithms/sortAlgos/sorting";
 import { Navbar } from "./web/navbar/navbar";
 import HomepageLayout, { Home } from "./web/home/home";
-import Mapalgos from "./algorithms/graph/mapalgos";
-import PathFinding from "./algorithms/graph/pathFinding";
+
 import MapPathFinding from "./algorithms/graph/mapPathFinding";
+import Footer from "./web/footer/footer";
 function App() {
   return (
     <Router>
@@ -41,6 +41,7 @@ function App() {
           <MapPathFinding></MapPathFinding>
         </Route>
       </Switch>
+      <Footer></Footer>
     </Router>
   );
 }

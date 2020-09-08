@@ -29,9 +29,11 @@ const Tree = ({ data }) => {
                 }}
               >
                 <Grid.Column key={ind + indx + times}>
+                  <div className='grid-container-div'>
                   {data[ind + startArray - 1]
                     ? data[ind + startArray - 1].valuee
                     : ""}
+                    </div>
                 </Grid.Column>
               </div>
             );
